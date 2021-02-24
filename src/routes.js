@@ -32,18 +32,33 @@ router.post("/", (req, res, next) => {
     const error = new Error(validation.error.details[0].message);
     error.statusCode = 400;
     next(error);
+  } else {
+    const newJump = {
+      id: jumplings.length + 1,
+      name: req.body.name,
+    };
+    jumplings.push(newJump);
+    res.status(200).json(newJump);
   }
-  const newJump = {
-    id: jumplings.length + 1,
-    name: req.body.name,
-  };
-  jumplings.push(newJump);
-  res.status(200).json(newJump);
 });
 
 router.get("/:id", (req, res) => {
-  console.log(req.jump);
-  res.status(200).json(jumplings);
+  res.status(200).json(req.jump);
+});
+
+router.put("/:id", (req, res) => {
+  const validation = validate(req.body);
+  if (validation.error) {
+    const error = new Error(validation.error.details[0].message);
+    error.statusCode = 400;
+    next(error);
+  } else {
+    const idx = jumplings.findIndex(
+      (jump) => jump.id === parseInt(req.jump.id)
+    );
+    jumplings[idx].name = req.body.name;
+    res.status(200).json(jumplings[idx]);
+  }
 });
 
 //validation
