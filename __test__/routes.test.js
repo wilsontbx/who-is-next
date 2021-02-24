@@ -23,7 +23,7 @@ describe("Route", () => {
   });
 
   // post a error
-  it("POST / should able create", async () => {
+  it("POST / should throw error name is required", async () => {
     const { text } = await request(app).post("/jumplings").send({}).expect(400);
     expect(text).toEqual('Error: "name" is required');
   });
@@ -51,5 +51,24 @@ describe("Route", () => {
       })
       .expect(200);
     expect(body).toEqual({ id: 1, name: "Update Testing" });
+  });
+
+  //   error checking
+  it("PUT / should throw error name is not allowed to be empty", async () => {
+    const { text } = await request(app)
+      .put("/jumplings/1")
+      .send({ name: "" })
+      .expect(400);
+    expect(text).toEqual('Error: "name" is not allowed to be empty');
+  });
+
+  it("DELETE / should able to delete", async () => {
+    const { body } = await request(app).delete("/jumplings/1").expect(200);
+    expect(body).toEqual({ id: 1, name: "Update Testing" });
+  });
+
+  it("GET / should get only id 2", async () => {
+    const { body } = await request(app).get("/jumplings").expect(200);
+    expect(body).toEqual([{ id: 2, name: "another guy" }]);
   });
 });

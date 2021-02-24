@@ -46,7 +46,7 @@ router.get("/:id", (req, res) => {
   res.status(200).json(req.jump);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   const validation = validate(req.body);
   if (validation.error) {
     const error = new Error(validation.error.details[0].message);
@@ -61,10 +61,16 @@ router.put("/:id", (req, res) => {
   }
 });
 
+router.delete("/:id", (req, res) => {
+  const idx = jumplings.findIndex((jump) => jump.id === parseInt(req.jump.id));
+  const jumpDelete = jumplings.splice(idx, idx < 0 ? 0 : 1);
+  let jump = jumpDelete[0];
+  res.status(200).json(jump);
+});
+
 //validation
 router.use((err, req, res, next) => {
-  res.statusCode = err.statusCode;
-  res.send(`${err}`);
+  res.status(err.statusCode).send(`${err}`);
 });
 
 module.exports = router;
