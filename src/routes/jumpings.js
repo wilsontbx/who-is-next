@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const getRandom = require("./getRandom");
-const math = require("mathjs");
+
 //data
 const jumplings = require("./data");
 let id = 1;
@@ -25,7 +25,6 @@ router.param("id", (req, res, next, id) => {
 
 //route
 router.get("/presenter", (req, res) => {
-  console.log(getRandom());
   res.status(200).json(jumplings[getRandom()]);
 });
 
@@ -80,7 +79,8 @@ router.delete("/:id", (req, res) => {
 
 //validation
 router.use((err, req, res, next) => {
-  res.status(err.statusCode).send(`${err}`);
+  err.statusCode = err.statusCode || 500;
+  res.status(err.statusCode).send(err.message);
 });
 
 module.exports = router;

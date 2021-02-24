@@ -1,11 +1,5 @@
 const request = require("supertest");
 const app = require("../app");
-const math = require("mathjs");
-const jumplings = require("../src/routes/data");
-
-beforeEach(() => {
-  jest.resetAllMocks();
-});
 
 describe("Route", () => {
   it("GET / should get all the route", async () => {
@@ -31,7 +25,7 @@ describe("Route", () => {
   // post a error
   it("POST / should throw error name is required", async () => {
     const { text } = await request(app).post("/jumplings").send({}).expect(400);
-    expect(text).toEqual('Error: "name" is required');
+    expect(text).toEqual('"name" is required');
   });
 
   it("POST / should able create", async () => {
@@ -67,7 +61,7 @@ describe("Route", () => {
       .put("/jumplings/1")
       .send({ name: "" })
       .expect(400);
-    expect(text).toEqual('Error: "name" is not allowed to be empty');
+    expect(text).toEqual('"name" is not allowed to be empty');
   });
 
   it("DELETE / should able to delete", async () => {
@@ -99,9 +93,4 @@ describe("Route", () => {
       .expect(200);
     expect(body).toEqual({ id: 4, name: "another-guy-2" });
   });
-
-  //   it("GET / should able get random", async () => {
-  //     const { body } = await request(app).get("/jumplings/presenter").expect(200);
-  //     expect(body).toEqual({ id: 4, name: "another guy 2" });
-  //   });
 });
