@@ -14,6 +14,13 @@ function validate(jump) {
   return schema.validate(jump);
 }
 
+//middleware
+router.param("id", (req, res, next, id) => {
+  let jump = jumplings.find((jump) => jump.id === parseInt(id));
+  req.jump = jump;
+  next();
+});
+
 //route
 router.get("/", (req, res) => {
   res.status(200).json(jumplings);
@@ -32,6 +39,11 @@ router.post("/", (req, res, next) => {
   };
   jumplings.push(newJump);
   res.status(200).json(newJump);
+});
+
+router.get("/:id", (req, res) => {
+  console.log(req.jump);
+  res.status(200).json(jumplings);
 });
 
 //validation
