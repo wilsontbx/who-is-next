@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("../src/app");
 
 describe("Route", () => {
   it("GET / should get all the route", async () => {

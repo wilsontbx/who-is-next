@@ -27,7 +27,7 @@ app.post("/", requireJsonContent, (req, res) => {
   res.status(201).send("Thanks for the JSON!");
 });
 
-const jumplings = require("./src/routes/jumpings");
+const jumplings = require("./routes/jumpings");
 app.use("/jumplings", jumplings);
 
 module.exports = app;
