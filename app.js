@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   });
 });
 
-const router = require("./src/routes");
-app.use("/jumplings", router);
+const jumplings = require("./src/routes/jumpings");
+app.use("/jumplings", jumplings);
 
 module.exports = app;

@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
+const getRandom = require("./getRandom");
 const math = require("mathjs");
 //data
-const jumplings = [];
+const jumplings = require("./data");
 let id = 1;
 
 //validation
@@ -23,6 +24,11 @@ router.param("id", (req, res, next, id) => {
 });
 
 //route
+router.get("/presenter", (req, res) => {
+  console.log(getRandom());
+  res.status(200).json(jumplings[getRandom()]);
+});
+
 router.get("/", (req, res) => {
   res.status(200).json(jumplings);
 });
@@ -40,12 +46,14 @@ router.post("/", (req, res, next) => {
     };
     jumplings.push(newJump);
     id++;
+
     res.status(200).json(newJump);
   }
 });
 
-router.get("/:id", (req, res) => {
-  res.status(200).json(req.jump);
+router.get("/:name", (req, res) => {
+  const idx = jumplings.findIndex((jump) => jump.name === req.params.name);
+  res.status(200).json(jumplings[idx]);
 });
 
 router.put("/:id", (req, res, next) => {
@@ -68,11 +76,6 @@ router.delete("/:id", (req, res) => {
   const jumpDelete = jumplings.splice(idx, idx < 0 ? 0 : 1);
   let jump = jumpDelete[0];
   res.status(200).json(jump);
-});
-
-router.get("/presenter", (req, res) => {
-  const randomInteger = math.randomInt(0, jumplings.length - 1);
-  res.status(200).json(jumplings[randomInteger]);
 });
 
 //validation
