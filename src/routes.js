@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-
+const math = require("mathjs");
 //data
 const jumplings = [];
+let id = 1;
 
 //validation
 function validate(jump) {
@@ -34,10 +35,11 @@ router.post("/", (req, res, next) => {
     next(error);
   } else {
     const newJump = {
-      id: jumplings.length + 1,
+      id: id,
       name: req.body.name,
     };
     jumplings.push(newJump);
+    id++;
     res.status(200).json(newJump);
   }
 });
@@ -66,6 +68,11 @@ router.delete("/:id", (req, res) => {
   const jumpDelete = jumplings.splice(idx, idx < 0 ? 0 : 1);
   let jump = jumpDelete[0];
   res.status(200).json(jump);
+});
+
+router.get("/presenter", (req, res) => {
+  const randomInteger = math.randomInt(0, jumplings.length - 1);
+  res.status(200).json(jumplings[randomInteger]);
 });
 
 //validation

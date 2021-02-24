@@ -71,4 +71,24 @@ describe("Route", () => {
     const { body } = await request(app).get("/jumplings").expect(200);
     expect(body).toEqual([{ id: 2, name: "another guy" }]);
   });
+
+  it("POST / should able create", async () => {
+    const { body } = await request(app)
+      .post("/jumplings")
+      .send({
+        name: "another guy 1",
+      })
+      .expect(200);
+    expect(body).toEqual({ id: 3, name: "another guy 1" });
+  });
+
+  it("POST / should able create", async () => {
+    const { body } = await request(app)
+      .post("/jumplings")
+      .send({
+        name: "another guy 2",
+      })
+      .expect(200);
+    expect(body).toEqual({ id: 4, name: "another guy 2" });
+  });
 });
