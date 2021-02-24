@@ -93,4 +93,9 @@ describe("Route", () => {
       .expect(200);
     expect(body).toEqual({ id: 4, name: "another-guy-2" });
   });
+
+  it("GET / should able get random", async () => {
+    const { body } = await request(app).get("/jumplings/presenter").expect(200);
+    expect([body].length).toEqual(1);
+  });
 });
