@@ -1,8 +1,7 @@
-const math = require("mathjs");
-const jumplings = require("./data");
+// const math = require("mathjs");
 
-function getRandom() {
-  return math.randomInt(0, jumplings.length);
-}
+// function getRandom() {
+//   return math.randomInt(0, jumplings.length);
+// }
 
-module.exports = getRandom;
+// module.exports = getRandom;

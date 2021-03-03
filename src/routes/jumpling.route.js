@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-const getRandom = require("./getRandom");
+const JumplingModel = require("../models/jumpling.model");
+const JumplingControllers = require("../controller/jumpling.controllers");
+// const getRandom = require("./getRandom");
 
 //data
-const jumplings = require("./data");
 let id = 1;
 
 //validation
@@ -17,15 +18,19 @@ function validate(jump) {
 }
 
 //middleware
-router.param("id", (req, res, next, id) => {
-  let jump = jumplings.find((jump) => jump.id === parseInt(id));
-  req.jump = jump;
-  next();
+router.param("id", async (req, res, next, id) => {
+  try {
+    const song = await JumplingControllers.findById(id);
+    req.song = song;
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 //route
 router.get("/presenter", (req, res) => {
-  res.status(200).json(jumplings[getRandom()]);
+  // res.status(200).json(jumplings[getRandom()]);
 });
 
 router.get("/", (req, res) => {
