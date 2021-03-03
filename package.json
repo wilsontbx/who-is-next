@@ -7,6 +7,9 @@
     "test": "jest --watch",
     "start": "node src/index.js"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
