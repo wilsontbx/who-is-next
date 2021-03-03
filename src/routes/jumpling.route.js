@@ -33,7 +33,7 @@ router.get("/presenter", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const allSong = await JumplingControllers.getAllJumps(next);
     res.status(200).json(allSong);
@@ -66,9 +66,9 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/:name", async (req, res) => {
+router.get("/:name", async (req, res, next) => {
   try {
-    const jump = await JumplingControllers.createOne(req.body, next);
+    const jump = await JumplingControllers.findByName(req.params.name, next);
     res.status(200).json(jump);
   } catch (err) {
     next(err);

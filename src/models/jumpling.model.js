@@ -7,8 +7,9 @@ const jumplingSchema = new Schema({
     required: true,
     minlength: 3,
     unique: true,
+    collation: { locale: "en", strength: 2 },
   },
 });
 
-const JumplingModel = mongoose.model("Song", jumplingSchema);
+const JumplingModel = mongoose.model("Jumpling", jumplingSchema);
 module.exports = JumplingModel;

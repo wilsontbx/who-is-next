@@ -28,7 +28,10 @@ const JumplingController = {
   },
   findByName: async (name, next) => {
     try {
-      const findJumpName = await JumplingModel.find({ name: name });
+      const findJumpName = await JumplingModel.find({ name: name }).collation({
+        locale: "en",
+        strength: 1,
+      });
       return findJumpName;
     } catch (err) {
       next(err);
