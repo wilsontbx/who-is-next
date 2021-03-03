@@ -53,6 +53,16 @@ const JumplingController = {
       next(err);
     }
   },
+  random: async (next) => {
+    try {
+      const randomJump = await JumplingModel.aggregate([
+        { $sample: { size: 1 } },
+      ]);
+      return randomJump;
+    } catch (err) {
+      next(err);
+    }
+  },
 };
 
 module.exports = JumplingController;

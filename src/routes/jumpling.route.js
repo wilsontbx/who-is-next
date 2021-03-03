@@ -1,12 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-const JumplingModel = require("../models/jumpling.model");
 const JumplingControllers = require("../controller/jumpling.controllers");
-// const getRandom = require("./getRandom");
-
-//data
-let id = 1;
 
 //validation
 function validate(jump) {
@@ -30,7 +25,12 @@ router.param("id", async (req, res, next, id) => {
 
 //route
 router.get("/presenter", async (req, res) => {
-  // res.status(200).json(jumplings[getRandom()]);
+  try {
+    const randomJump = await JumplingControllers.random(next);
+    res.status(200).json(randomJump);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get("/", async (req, res) => {
