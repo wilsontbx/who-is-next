@@ -24,7 +24,7 @@ router.param("id", async (req, res, next, id) => {
 });
 
 //route
-router.get("/presenter", async (req, res) => {
+router.get("/presenter", async (req, res, next) => {
   try {
     const randomJump = await JumplingControllers.random(next);
     res.status(200).json(randomJump);
@@ -100,7 +100,7 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const delatedJump = await JumplingControllers.deleteById(req.jump.id, next);
     res.status(200).json(delatedJump);
