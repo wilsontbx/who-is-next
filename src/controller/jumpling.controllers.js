@@ -18,10 +18,18 @@ const JumplingController = {
       next(err);
     }
   },
-  findById: async (id) => {
+  findById: async (id, next) => {
     try {
-      const findJump = await JumplingModel.findById(id);
-      return findJump;
+      const findJumpID = await JumplingModel.findById(id);
+      return findJumpID;
+    } catch (err) {
+      next(err);
+    }
+  },
+  findByName: async (name, next) => {
+    try {
+      const findJumpName = await JumplingModel.find({ name: name });
+      return findJumpName;
     } catch (err) {
       next(err);
     }

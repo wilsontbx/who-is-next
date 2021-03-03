@@ -20,8 +20,8 @@ function validate(jump) {
 //middleware
 router.param("id", async (req, res, next, id) => {
   try {
-    const song = await JumplingControllers.findById(id);
-    req.song = song;
+    const jump = await JumplingControllers.findById(id, next);
+    req.jump = jump;
     next();
   } catch (err) {
     next(err);
@@ -29,57 +29,84 @@ router.param("id", async (req, res, next, id) => {
 });
 
 //route
-router.get("/presenter", (req, res) => {
+router.get("/presenter", async (req, res) => {
   // res.status(200).json(jumplings[getRandom()]);
 });
 
-router.get("/", (req, res) => {
-  res.status(200).json(jumplings);
-});
-
-router.post("/", (req, res, next) => {
-  const validation = validate(req.body);
-  if (validation.error) {
-    const error = new Error(validation.error.details[0].message);
-    error.statusCode = 400;
-    next(error);
-  } else {
-    const newJump = {
-      id: id,
-      name: req.body.name,
-    };
-    jumplings.push(newJump);
-    id++;
-
-    res.status(200).json(newJump);
+router.get("/", async (req, res) => {
+  try {
+    const allSong = await JumplingControllers.getAllJumps(next);
+    res.status(200).json(allSong);
+  } catch (err) {
+    next(err);
   }
 });
 
-router.get("/:name", (req, res) => {
-  const idx = jumplings.findIndex((jump) => jump.name === req.params.name);
-  res.status(200).json(jumplings[idx]);
+router.post("/", async (req, res, next) => {
+  // const validation = validate(req.body);
+  // if (validation.error) {
+  //   const error = new Error(validation.error.details[0].message);
+  //   error.statusCode = 400;
+  //   next(error);
+  // } else {
+  //   const newJump = {
+  //     id: id,
+  //     name: req.body.name,
+  //   };
+  //   jumplings.push(newJump);
+  //   id++;
+
+  //   res.status(200).json(newJump);
+  // }
+  try {
+    const newJump = await JumplingControllers.createOne(req.body, next);
+    res.status(201).json(newJump);
+  } catch (err) {
+    next(err);
+  }
 });
 
-router.put("/:id", (req, res, next) => {
-  const validation = validate(req.body);
-  if (validation.error) {
-    const error = new Error(validation.error.details[0].message);
-    error.statusCode = 400;
-    next(error);
-  } else {
-    const idx = jumplings.findIndex(
-      (jump) => jump.id === parseInt(req.jump.id)
+router.get("/:name", async (req, res) => {
+  try {
+    const jump = await JumplingControllers.createOne(req.body, next);
+    res.status(200).json(jump);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put("/:id", async (req, res, next) => {
+  // const validation = validate(req.body);
+  // if (validation.error) {
+  //   const error = new Error(validation.error.details[0].message);
+  //   error.statusCode = 400;
+  //   next(error);
+  // } else {
+  //   const idx = jumplings.findIndex(
+  //     (jump) => jump.id === parseInt(req.jump.id)
+  //   );
+  //   jumplings[idx].name = req.body.name;
+  //   res.status(200).json(jumplings[idx]);
+  // }
+  try {
+    const updatedJump = await JumplingControllers.updateById(
+      req.jump.id,
+      req.body,
+      next
     );
-    jumplings[idx].name = req.body.name;
-    res.status(200).json(jumplings[idx]);
+    res.status(200).json(updatedJump);
+  } catch (err) {
+    next(err);
   }
 });
 
-router.delete("/:id", (req, res) => {
-  const idx = jumplings.findIndex((jump) => jump.id === parseInt(req.jump.id));
-  const jumpDelete = jumplings.splice(idx, idx < 0 ? 0 : 1);
-  let jump = jumpDelete[0];
-  res.status(200).json(jump);
+router.delete("/:id", async (req, res) => {
+  try {
+    const delatedJump = await JumplingControllers.deleteById(req.jump.id, next);
+    res.status(200).json(delatedJump);
+  } catch (err) {
+    next(err);
+  }
 });
 
 //validation
