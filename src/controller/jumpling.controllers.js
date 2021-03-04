@@ -58,6 +58,10 @@ const JumplingController = {
   },
   random: async (next) => {
     try {
+      // if(everyone choosen ){
+      //   updateAll = false
+      // }
+
       const randomJump = await JumplingModel.aggregate([
         { $match: { choose: false } },
         { $sample: { size: 1 } },

@@ -43,7 +43,7 @@ describe("Route", () => {
       const { body } = await request(app)
         .get("/jumplings/presenter")
         .expect(200);
-      expect(body.length).toEqual(1);
+      expect(body).toMatchObject({ choose: true });
     });
 
     it("should return all random jumpling", async () => {
@@ -51,7 +51,6 @@ describe("Route", () => {
       const { body } = await request(app)
         .get("/jumplings/presenter/all")
         .expect(200);
-      console.log(body.length);
       expect(body.length).toEqual(1);
     });
   });
@@ -120,7 +119,7 @@ describe("Route", () => {
       );
     });
 
-    it("should throw error if request body is not json", async () => {
+    it("should throw error if name is too short", async () => {
       const jump = await JumplingModel.findOne({ name: "jump1" });
       const response = await request(app)
         .put(`/jumplings/${jump.id}`)
@@ -131,7 +130,7 @@ describe("Route", () => {
         "Validation failed: name: Path `name` (`1`) is shorter than the minimum allowed length (3)."
       );
     });
-
+    // should throw error if request body is not json
     it("should throw error if token didnt send", async () => {
       const jump = await JumplingModel.findOne({ name: "jump1" });
       const response = await request(app)
