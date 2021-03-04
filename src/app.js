@@ -30,4 +30,7 @@ app.post("/", requireJsonContent, (req, res) => {
 const jumplings = require("./routes/jumpling.route");
 app.use("/jumplings", jumplings);
 
+const userRouter = require("./routes/user.route");
+app.use("/user", userRouter);
+
 module.exports = app;
