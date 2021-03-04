@@ -2,14 +2,13 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const createJWTToken = require("../config/jwt");
-const User = require("../models/user");
-const protectRoute = require("../middleware/protectorRoute");
+const UserModel = require("../models/user.model");
 
 router.post("/", async (req, res, next) => {
   try {
-    const user = new User(req.body);
+    const user = new UserModel(req.body);
     const newUser = await user.save();
-    res.send(newUser);
+    res.status(201).json(newUser);
   } catch (err) {
     next(err);
   }
@@ -18,7 +17,7 @@ router.post("/", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const user = await UserModel.findOne({ username });
     const result = await bcrypt.compare(password, user.password);
 
     if (!result) {
@@ -51,7 +50,7 @@ router.post("/logout", (req, res) => {
 });
 
 router.use((err, req, res, next) => {
-  res.statusCode = err.statusCode;
+  res.statusCode = err.statusCode || 500;
   res.send(`${err}`);
 });
 

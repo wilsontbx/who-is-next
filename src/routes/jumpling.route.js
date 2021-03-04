@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const JumplingControllers = require("../controller/jumpling.controllers");
+const protectRoute = require("../middleware/protectorRoute");
 
 //validation
 function validate(jump) {
@@ -75,7 +76,7 @@ router.get("/:name", async (req, res, next) => {
   }
 });
 
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", protectRoute, async (req, res, next) => {
   // const validation = validate(req.body);
   // if (validation.error) {
   //   const error = new Error(validation.error.details[0].message);
@@ -100,7 +101,7 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", protectRoute, async (req, res, next) => {
   try {
     const delatedJump = await JumplingControllers.deleteById(req.jump.id, next);
     res.status(200).json(delatedJump);

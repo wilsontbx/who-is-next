@@ -1,7 +1,9 @@
 const request = require("supertest");
 const app = require("../src/app");
 const JumplingModel = require("../src/models/jumpling.model");
+const UserModel = require("../src/models/user.model");
 const dbHandlers = require("../test/dbHandler");
+const createJWTToken = require("../src/config/jwt");
 
 describe("Route", () => {
   let token;
@@ -15,12 +17,12 @@ describe("Route", () => {
   ];
   beforeAll(async () => {
     await dbHandlers.connect();
-    // const user = new UserModel({
-    //   username: "ash3",
-    //   password: "iWannaB3DVeryBest",
-    // });
-    // await user.save();
-    // token = createJWTToken(user.username);
+    const user = new UserModel({
+      username: "ash3",
+      password: "iWannaB3DVeryBest",
+    });
+    await user.save();
+    token = createJWTToken(user.username);
   });
 
   beforeEach(async () => {
@@ -92,6 +94,7 @@ describe("Route", () => {
       const response = await request(app)
         .put(`/jumplings/${jump.id}`)
         .send({ name: "songUpdated" })
+        .set("Cookie", `token = ${token}`)
         .expect(200);
       expect(response.body).toMatchObject({ name: "songUpdated" });
     });
@@ -101,6 +104,7 @@ describe("Route", () => {
       const response = await request(app)
         .put(`/jumplings/${jump.id}`)
         .send({ name: "" })
+        .set("Cookie", `token = ${token}`)
         .expect(500);
       expect(response.text).toEqual(
         "Validation failed: name: Path `name` is required."
@@ -112,6 +116,7 @@ describe("Route", () => {
       const response = await request(app)
         .put(`/jumplings/${jump.id}`)
         .send({ name: "1" })
+        .set("Cookie", `token = ${token}`)
         .expect(500);
       expect(response.text).toEqual(
         "Validation failed: name: Path `name` (`1`) is shorter than the minimum allowed length (3)."
@@ -124,14 +129,15 @@ describe("Route", () => {
       const jump = await JumplingModel.findOne({ name: "jump1" });
       const response = await request(app)
         .delete(`/jumplings/${jump.id}`)
+        .set("Cookie", `token = ${token}`)
         .expect(200);
       expect(response.body).toMatchObject({ name: "jump1" });
     });
 
     it("should throw error if jumpling does not exist", async () => {
-      const jump = await JumplingModel.findOne({ name: "jump1" });
       const response = await request(app)
         .delete("/jumplings/603f3ef83a4e062e07efb05a")
+        .set("Cookie", `token = ${token}`)
         .expect(500);
       expect(response.text).toEqual("Cannot read property 'id' of null");
     });
