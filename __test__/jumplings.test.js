@@ -45,6 +45,15 @@ describe("Route", () => {
         .expect(200);
       expect(body.length).toEqual(1);
     });
+
+    it("should return all random jumpling", async () => {
+      await request(app).get("/jumplings/presenter");
+      const { body } = await request(app)
+        .get("/jumplings/presenter/all")
+        .expect(200);
+      console.log(body.length);
+      expect(body.length).toEqual(1);
+    });
   });
 
   describe("GET /jumplings/:name", () => {
@@ -122,6 +131,22 @@ describe("Route", () => {
         "Validation failed: name: Path `name` (`1`) is shorter than the minimum allowed length (3)."
       );
     });
+
+    it("should throw error if token didnt send", async () => {
+      const jump = await JumplingModel.findOne({ name: "jump1" });
+      const response = await request(app)
+        .put(`/jumplings/${jump.id}`)
+        .expect(500);
+      expect(response.text).toEqual("You are not authorized");
+    });
+
+    it("should throw error if jumpling does not exist", async () => {
+      const response = await request(app)
+        .put("/jumplings/603f3ef83a4e062e07efb05a")
+        .set("Cookie", `token = ${token}`)
+        .expect(500);
+      expect(response.text).toEqual("Cannot read property 'id' of null");
+    });
   });
 
   describe("DELETE /jumplings/:id", () => {
@@ -140,6 +165,45 @@ describe("Route", () => {
         .set("Cookie", `token = ${token}`)
         .expect(500);
       expect(response.text).toEqual("Cannot read property 'id' of null");
+    });
+
+    it("should throw error if token didnt send", async () => {
+      const response = await request(app)
+        .delete("/jumplings/603f3ef83a4e062e07efb05a")
+        .expect(500);
+      expect(response.text).toEqual("You are not authorized");
+    });
+  });
+
+  describe("POST /users", () => {
+    it("should create new user if fields are valid", async () => {
+      const response = await request(app)
+        .post("/users/")
+        .send({ username: "username", password: "12345678" })
+        .expect(201);
+      expect(response.body).toMatchObject({
+        username: "username",
+      });
+    });
+
+    it("should throw error if username and password is empty", async () => {
+      const response = await request(app)
+        .post("/users/")
+        .send({ username: "", password: "" })
+        .expect(500);
+      expect(response.text).toEqual(
+        "ValidationError: username: Path `username` is required., password: Path `password` is required."
+      );
+    });
+
+    it("should throw error if username and password is too short", async () => {
+      const response = await request(app)
+        .post("/users/")
+        .send({ username: "1", password: "1" })
+        .expect(500);
+      expect(response.text).toEqual(
+        "ValidationError: username: Path `username` (`1`) is shorter than the minimum allowed length (3)., password: Path `password` (`1`) is shorter than the minimum allowed length (8)."
+      );
     });
   });
 });

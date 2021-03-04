@@ -59,9 +59,29 @@ const JumplingController = {
   random: async (next) => {
     try {
       const randomJump = await JumplingModel.aggregate([
+        { $match: { choose: false } },
         { $sample: { size: 1 } },
       ]);
-      return randomJump;
+
+      const randomUpdateJump = await JumplingModel.findByIdAndUpdate(
+        randomJump[0]._id,
+        {
+          choose: true,
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+      return randomUpdateJump;
+    } catch (err) {
+      next(err);
+    }
+  },
+  getAllChoose: async (next) => {
+    try {
+      const allChooseJump = await JumplingModel.find({ choose: true });
+      return allChooseJump;
     } catch (err) {
       next(err);
     }

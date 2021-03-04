@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -8,6 +9,11 @@ const jumplingSchema = new Schema({
     minlength: 3,
     unique: true,
     collation: { locale: "en", strength: 2 },
+  },
+  choose: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 

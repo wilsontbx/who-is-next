@@ -25,6 +25,15 @@ router.param("id", async (req, res, next, id) => {
 });
 
 //route
+router.get("/presenter/all", async (req, res, next) => {
+  try {
+    const randomAllJump = await JumplingControllers.getAllChoose(next);
+    res.status(200).json(randomAllJump);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/presenter", async (req, res, next) => {
   try {
     const randomJump = await JumplingControllers.random(next);
