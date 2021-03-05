@@ -14,6 +14,12 @@ describe("Route", () => {
     {
       name: "jump2",
     },
+    {
+      name: "jump3",
+    },
+    {
+      name: "jump4",
+    },
   ];
   beforeAll(async () => {
     await dbHandlers.connect();
@@ -46,8 +52,31 @@ describe("Route", () => {
       expect(body).toMatchObject({ choose: true });
     });
 
-    it("should return all random jumpling", async () => {
+    it("should return all random jumpling (1)", async () => {
       await request(app).get("/jumplings/presenter");
+      const { body } = await request(app)
+        .get("/jumplings/presenter/all")
+        .expect(200);
+      expect(body.length).toEqual(1);
+    });
+
+    it("should return all random jumpling (3)", async () => {
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+      const { body } = await request(app)
+        .get("/jumplings/presenter/all")
+        .expect(200);
+      expect(body.length).toEqual(3);
+    });
+
+    it("should return all random jumpling (5) if more than 4 will reset to 0", async () => {
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+      await request(app).get("/jumplings/presenter");
+
       const { body } = await request(app)
         .get("/jumplings/presenter/all")
         .expect(200);

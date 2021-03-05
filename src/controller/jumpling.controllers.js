@@ -1,3 +1,4 @@
+const { count } = require("../models/jumpling.model");
 const JumplingModel = require("../models/jumpling.model");
 
 const JumplingController = {
@@ -58,10 +59,10 @@ const JumplingController = {
   },
   random: async (next) => {
     try {
-      // if(everyone choosen ){
-      //   updateAll = false
-      // }
-
+      const choosenlength = await JumplingModel.find({ choose: false }).count();
+      if (!choosenlength) {
+        await JumplingModel.updateMany({ choose: true }, { choose: false });
+      }
       const randomJump = await JumplingModel.aggregate([
         { $match: { choose: false } },
         { $sample: { size: 1 } },
