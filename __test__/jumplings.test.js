@@ -32,6 +32,7 @@ describe("Route", () => {
   });
 
   beforeEach(async () => {
+    await dbHandlers.connect();
     await JumplingModel.create(JumplingData);
   });
   afterEach(async () => await dbHandlers.clearDatabase());
@@ -159,7 +160,19 @@ describe("Route", () => {
         "Validation failed: name: Path `name` (`1`) is shorter than the minimum allowed length (3)."
       );
     });
-    // should throw error if request body is not json
+
+    it("should throw error if request body is not json", async () => {
+      const jump = await JumplingModel.findOne({ name: "jump1" });
+      const response = await request(app)
+        .put(`/jumplings/${jump.id}`)
+        .send({ name: "1" })
+        .set("Cookie", `token = ${token}`)
+        .expect(500);
+      expect(response.text).toEqual(
+        "Validation failed: name: Path `name` (`1`) is shorter than the minimum allowed length (3)."
+      );
+    });
+
     it("should throw error if token didnt send", async () => {
       const jump = await JumplingModel.findOne({ name: "jump1" });
       const response = await request(app)
@@ -200,38 +213,6 @@ describe("Route", () => {
         .delete("/jumplings/603f3ef83a4e062e07efb05a")
         .expect(500);
       expect(response.text).toEqual("You are not authorized");
-    });
-  });
-
-  describe("POST /users", () => {
-    it("should create new user if fields are valid", async () => {
-      const response = await request(app)
-        .post("/users/")
-        .send({ username: "username", password: "12345678" })
-        .expect(201);
-      expect(response.body).toMatchObject({
-        username: "username",
-      });
-    });
-
-    it("should throw error if username and password is empty", async () => {
-      const response = await request(app)
-        .post("/users/")
-        .send({ username: "", password: "" })
-        .expect(500);
-      expect(response.text).toEqual(
-        "ValidationError: username: Path `username` is required., password: Path `password` is required."
-      );
-    });
-
-    it("should throw error if username and password is too short", async () => {
-      const response = await request(app)
-        .post("/users/")
-        .send({ username: "1", password: "1" })
-        .expect(500);
-      expect(response.text).toEqual(
-        "ValidationError: username: Path `username` (`1`) is shorter than the minimum allowed length (3)., password: Path `password` (`1`) is shorter than the minimum allowed length (8)."
-      );
     });
   });
 });
