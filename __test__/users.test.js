@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../src/app");
-const UserModel = require("../src/models/user.model");
 const dbHandlers = require("../test/dbHandler");
+const UserModel = require("../src/models/user.model");
 
 describe("Route", () => {
   beforeAll(async () => {
