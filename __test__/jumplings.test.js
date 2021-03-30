@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../src/app");
-const dbHandlers = require("../test/dbHandler");
 const JumplingModel = require("../src/models/jumpling.model");
 const UserModel = require("../src/models/user.model");
+const dbHandlers = require("../test/dbHandler");
 const createJWTToken = require("../src/config/jwt");
 
 describe("Route", () => {
